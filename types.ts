@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export interface Service {
@@ -18,11 +17,6 @@ export interface ProcessStep {
 export interface Stat {
   value: string;
   label: string;
-}
-
-export interface SocialLink {
-  icon: React.ReactNode;
-  url: string;
 }
 
 export interface ContactInfo {

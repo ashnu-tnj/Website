@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import SectionHeading from './SectionHeading';
 import AnimatedElement from './AnimatedElement';
-import { SOCIAL_LINKS_DATA, CONTACT_INFO_DATA } from '../constants';
-import type { SocialLink, ContactInfo } from '../types';
+import { CONTACT_INFO_DATA } from '../constants';
+import type { ContactInfo } from '../types';
 
 const ContactInfoItem: React.FC<{ item: ContactInfo }> = ({ item }) => (
   <div className="flex items-start group">
@@ -22,12 +21,6 @@ const ContactInfoItem: React.FC<{ item: ContactInfo }> = ({ item }) => (
       {item.subValue && <p className="text-platinum/50 text-sm font-light">{item.subValue}</p>}
     </div>
   </div>
-);
-
-const SocialLinkItem: React.FC<{ link: SocialLink }> = ({ link }) => (
-  <a href={link.url} className="w-10 h-10 rounded-xl bg-champagne/10 flex items-center justify-center text-champagne/70 hover:text-champagne hover:bg-champagne/20 transition-all duration-300">
-    {link.icon}
-  </a>
 );
 
 const ContactForm: React.FC = () => {
@@ -97,9 +90,6 @@ const Contact: React.FC = () => {
               </h3>
               <div className="space-y-8">
                 {CONTACT_INFO_DATA.map(item => <ContactInfoItem key={item.label} item={item} />)}
-              </div>
-              <div className="flex space-x-4 mt-12 pt-8 border-t border-champagne/10">
-                {SOCIAL_LINKS_DATA.map((link, index) => <SocialLinkItem key={index} link={link} />)}
               </div>
             </div>
           </AnimatedElement>
