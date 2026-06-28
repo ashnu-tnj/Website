@@ -23,25 +23,47 @@ const ContactInfoItem: React.FC<{ item: ContactInfo }> = ({ item }) => (
   </div>
 );
 
+const inputClasses =
+    "w-full px-6 py-4 bg-charcoal/50 border border-champagne/20 rounded-2xl text-pearl placeholder-platinum/50 font-light focus:outline-none focus:border-champagne/60 focus:ring-2 focus:ring-champagne/20 transition-all duration-300";
+const labelClasses = "block text-platinum/60 text-sm mb-2 font-light tracking-wide";
+
 const ContactForm: React.FC = () => {
     const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
-    
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (status !== 'idle') return;
+
+        const form = e.currentTarget;
+        const data = new FormData(form);
+        const name = (data.get('name') as string)?.trim() ?? '';
+        const email = (data.get('email') as string)?.trim() ?? '';
+        const company = (data.get('company') as string)?.trim() ?? '';
+        const message = (data.get('message') as string)?.trim() ?? '';
+
         setStatus('sending');
-        setTimeout(() => {
+
+        // No backend is connected, so hand the inquiry off via the user's email
+        // client instead of silently discarding it.
+        const subject = encodeURIComponent(`New inquiry from ${name || 'website visitor'}`);
+        const body = encodeURIComponent(
+            `Name: ${name}\nCompany: ${company || '—'}\nEmail: ${email}\n\n${message}`
+        );
+
+        window.setTimeout(() => {
+            window.location.href = `mailto:info@aflatus.com?subject=${subject}&body=${body}`;
             setStatus('sent');
-            setTimeout(() => {
+            window.setTimeout(() => {
                 setStatus('idle');
-                (e.target as HTMLFormElement).reset();
+                form.reset();
             }, 2500);
-        }, 1500);
+        }, 800);
     };
 
     const getButtonState = () => {
         switch (status) {
-            case 'sending': return { text: 'Sending...', disabled: true, className: 'opacity-70' };
-            case 'sent': return { text: 'Sent Successfully', disabled: true, className: 'bg-green-600' };
+            case 'sending': return { text: 'Sending…', disabled: true, className: 'opacity-70 cursor-wait' };
+            case 'sent': return { text: 'Thank You — Check Your Email', disabled: true, className: 'from-green-600 to-green-500' };
             case 'idle': return { text: 'Send Inquiry', disabled: false, className: '' };
         }
     };
@@ -49,16 +71,31 @@ const ContactForm: React.FC = () => {
     const buttonState = getButtonState();
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
             <div className="grid md:grid-cols-2 gap-6">
-                <input type="text" placeholder="Your Name" required className="w-full px-6 py-4 bg-charcoal/50 border border-champagne/20 rounded-2xl text-pearl placeholder-platinum/50 font-light focus:outline-none focus:border-champagne/60 focus:ring-2 focus:ring-champagne/20 transition-all duration-300"/>
-                <input type="text" placeholder="Company" className="w-full px-6 py-4 bg-charcoal/50 border border-champagne/20 rounded-2xl text-pearl placeholder-platinum/50 font-light focus:outline-none focus:border-champagne/60 focus:ring-2 focus:ring-champagne/20 transition-all duration-300"/>
+                <div>
+                    <label htmlFor="contact-name" className={labelClasses}>Your Name</label>
+                    <input id="contact-name" name="name" type="text" placeholder="Jane Doe" required autoComplete="name" className={inputClasses}/>
+                </div>
+                <div>
+                    <label htmlFor="contact-company" className={labelClasses}>Company <span className="text-platinum/40">(optional)</span></label>
+                    <input id="contact-company" name="company" type="text" placeholder="Acme Inc." autoComplete="organization" className={inputClasses}/>
+                </div>
             </div>
-            <input type="email" placeholder="Email Address" required className="w-full px-6 py-4 bg-charcoal/50 border border-champagne/20 rounded-2xl text-pearl placeholder-platinum/50 font-light focus:outline-none focus:border-champagne/60 focus:ring-2 focus:ring-champagne/20 transition-all duration-300"/>
-            <textarea placeholder="Tell us about your vision" required rows={5} className="w-full px-6 py-4 bg-charcoal/50 border border-champagne/20 rounded-2xl text-pearl placeholder-platinum/50 resize-none font-light focus:outline-none focus:border-champagne/60 focus:ring-2 focus:ring-champagne/20 transition-all duration-300"></textarea>
-            <button type="submit" disabled={buttonState.disabled} className={`w-full text-obsidian font-medium py-4 px-8 rounded-2xl tracking-wide bg-gradient-to-r from-champagne to-yellow-600 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-champagne/30 ${buttonState.className}`}>
+            <div>
+                <label htmlFor="contact-email" className={labelClasses}>Email Address</label>
+                <input id="contact-email" name="email" type="email" placeholder="you@example.com" required autoComplete="email" className={inputClasses}/>
+            </div>
+            <div>
+                <label htmlFor="contact-message" className={labelClasses}>Tell us about your vision</label>
+                <textarea id="contact-message" name="message" placeholder="A few words about your project…" required rows={5} className={`${inputClasses} resize-none`}></textarea>
+            </div>
+            <button type="submit" disabled={buttonState.disabled} className={`w-full text-obsidian font-medium py-4 px-8 rounded-2xl tracking-wide bg-gradient-to-r from-champagne to-yellow-600 transition-all duration-300 enabled:hover:scale-[1.02] enabled:hover:shadow-2xl enabled:hover:shadow-champagne/30 disabled:cursor-not-allowed ${buttonState.className}`}>
                 {buttonState.text}
             </button>
+            <p className="sr-only" role="status" aria-live="polite">
+                {status === 'sending' ? 'Sending your inquiry' : status === 'sent' ? 'Inquiry ready in your email client' : ''}
+            </p>
         </form>
     );
 };
