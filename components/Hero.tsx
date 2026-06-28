@@ -46,7 +46,7 @@ const Hero: React.FC = () => {
         <AnimatedElement delay={600}>
           <button 
             onClick={handleDiscoverClick}
-            className="group relative inline-block px-12 py-4 rounded-full text-obsidian font-medium text-lg tracking-wide bg-gradient-to-r from-champagne to-yellow-600 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-champagne/30"
+            className="group relative inline-block px-12 py-4 rounded-full text-obsidian font-medium text-lg tracking-wide bg-gradient-to-r from-champagne to-yellow-600 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-champagne/30 cursor-pointer"
           >
             Discover Our Expertise
             <span className="absolute top-0 left-0 w-full h-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></span>

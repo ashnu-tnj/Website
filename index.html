@@ -5,6 +5,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aflatus - Engineering Digital Excellence</title>
+    <meta name="description" content="Aflatus is a digital engineering agency crafting custom apps, luxury web experiences, and intelligent automation. From Chennai to the Middle East." />
+    <meta name="theme-color" content="#0B0B0F" />
+    <link rel="canonical" href="https://aflatus.com/" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230B0B0F'/%3E%3Ctext x='50' y='70' font-family='Georgia,serif' font-size='62' font-style='italic' font-weight='bold' fill='%23D4AF37' text-anchor='middle'%3Ea%3C/text%3E%3C/svg%3E" />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Aflatus - Engineering Digital Excellence" />
+    <meta property="og:description" content="Custom apps, luxury web experiences, and intelligent automation. From Chennai to the Middle East." />
+    <meta property="og:url" content="https://aflatus.com/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aflatus - Engineering Digital Excellence" />
+    <meta name="twitter:description" content="Custom apps, luxury web experiences, and intelligent automation. From Chennai to the Middle East." />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,6 +65,55 @@
       }
     </script>
     <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Offset anchored sections so the fixed header doesn't overlap them */
+      section[id] {
+        scroll-margin-top: 6rem;
+      }
+      body {
+        background-color: #0B0B0F;
+      }
+      /* Themed scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0B0B0F;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(212, 175, 55, 0.35);
+        border-radius: 9999px;
+        border: 2px solid #0B0B0F;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(212, 175, 55, 0.6);
+      }
+      html {
+        scrollbar-color: rgba(212, 175, 55, 0.35) #0B0B0F;
+      }
+      /* Accessible focus ring */
+      :focus-visible {
+        outline: 2px solid #D4AF37;
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+      ::selection {
+        background: rgba(212, 175, 55, 0.3);
+        color: #F8F9FA;
+      }
+      /* Respect users who prefer reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
       /* For custom text gradient */
       .luxury-text {
         background: linear-gradient(135deg, #D4AF37 0%, #E8B4A6 50%, #D4AF37 100%);
@@ -84,5 +147,6 @@
 </head>
   <body class="bg-obsidian text-pearl antialiased overflow-x-hidden">
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

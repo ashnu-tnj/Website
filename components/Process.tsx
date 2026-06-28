@@ -5,9 +5,24 @@ import { PROCESS_DATA } from '../constants';
 import SectionHeading from './SectionHeading';
 import AnimatedElement from './AnimatedElement';
 
+// Static class maps so Tailwind can detect these utilities at build time.
+// (Interpolating color names into class strings at runtime is not reliably
+// picked up by Tailwind's JIT engine and can leave the borders/lines unstyled.)
+const BORDER_CLASSES: Record<ProcessStep['borderColor'], string> = {
+    champagne: 'border-champagne/30 group-hover:border-champagne/60',
+    'rose-gold': 'border-rose-gold/30 group-hover:border-rose-gold/60',
+    platinum: 'border-platinum/30 group-hover:border-platinum/60',
+};
+
+const LINE_CLASSES: Record<ProcessStep['borderColor'], string> = {
+    champagne: 'from-champagne/30 to-transparent',
+    'rose-gold': 'from-rose-gold/30 to-transparent',
+    platinum: 'from-platinum/30 to-transparent',
+};
+
 const ProcessStepCard: React.FC<{ step: ProcessStep, isLast: boolean }> = ({ step, isLast }) => {
-    const borderColorClass = `border-${step.borderColor}/30 group-hover:border-${step.borderColor}/60`;
-    const lineGradientClass = `from-${step.borderColor}/30 to-transparent`;
+    const borderColorClass = BORDER_CLASSES[step.borderColor];
+    const lineGradientClass = LINE_CLASSES[step.borderColor];
 
     return (
         <div className="text-center group relative">

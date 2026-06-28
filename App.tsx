@@ -10,22 +10,33 @@ import Footer from './components/Footer';
 const ScrollProgressBar: React.FC = () => {
   const [scrollPercentage, setScrollPercentage] = useState(0);
 
-  const handleScroll = () => {
-    const scrollTop = document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    if (scrollHeight > 0) {
-      const scrollPercent = (scrollTop / scrollHeight) * 100;
-      setScrollPercentage(scrollPercent);
-    }
-  };
-
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    let frame = 0;
+
+    const updateProgress = () => {
+      frame = 0;
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight =
+        document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      setScrollPercentage(scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0);
+    };
+
+    const handleScroll = () => {
+      if (!frame) {
+        frame = window.requestAnimationFrame(updateProgress);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    updateProgress();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-full h-[2px] z-[60]">
+    <div className="fixed top-0 left-0 w-full h-[2px] z-[60] pointer-events-none" aria-hidden="true">
       <div
         className="h-full bg-gradient-to-r from-champagne to-rose-gold"
         style={{ width: `${scrollPercentage}%`, transition: 'width 0.1s ease-out' }}
@@ -38,24 +49,17 @@ const App: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Elegant page load animation
-    document.body.style.opacity = '0';
-    document.body.style.transition = 'opacity 1s ease';
-    
-    const timer = setTimeout(() => {
-      document.body.style.opacity = '1';
-      setIsLoaded(true);
-    }, 100);
-
-    return () => clearTimeout(timer);
+    // Trigger an elegant fade-in on first paint without hiding content entirely.
+    const timer = window.requestAnimationFrame(() => setIsLoaded(true));
+    return () => window.cancelAnimationFrame(timer);
   }, []);
 
-  if (!isLoaded) {
-    return null; // Or a loading spinner
-  }
-
   return (
-    <div className="bg-obsidian text-pearl font-sans">
+    <div
+      className={`bg-obsidian text-pearl font-sans transition-opacity duration-1000 ease-out ${
+        isLoaded ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
       <ScrollProgressBar />
       <Header />
       <main>

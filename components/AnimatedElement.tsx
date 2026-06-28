@@ -12,15 +12,15 @@ const AnimatedElement: React.FC<AnimatedElementProps> = ({ children, className =
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    let timer: number;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTimeout(() => {
-            setIsVisible(true);
-            if (ref.current) {
-                observer.unobserve(ref.current);
-            }
-          }, delay);
+          timer = window.setTimeout(() => setIsVisible(true), delay);
+          observer.unobserve(node);
         }
       },
       {
@@ -29,14 +29,11 @@ const AnimatedElement: React.FC<AnimatedElementProps> = ({ children, className =
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    observer.observe(node);
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
+      observer.disconnect();
+      if (timer) window.clearTimeout(timer);
     };
   }, [delay]);
 
